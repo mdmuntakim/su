@@ -3,7 +3,7 @@
 
     <!-- Static strings -->
     <string name="magisk" translatable="false">SuperSU</string>
-    <string name="zygisk" translatable="false">Zygisk</string>
+    <string name="zygisk" translatable="false">Zysote</string>
     <string name="empty" translatable="false"/>
 
     <string name="paypal" translatable="false">PayPal</string>

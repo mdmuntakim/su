@@ -91,11 +91,10 @@ sealed class DeveloperItem : Dev {
             )
     }
     
-    object iammuntakim: DeveloperItem(), MAImpl {
+    object iammuntakim: DeveloperItem(), MUNTAKIMImpl {
         override val items =
             listOf(
-                object : IconLink.Github.User() { override val name = "iammuntakim" },
-                IconLink.Source
+                object : IconLink.Github.User() { override val name = "iammuntakim" }
             )
     }
 }
