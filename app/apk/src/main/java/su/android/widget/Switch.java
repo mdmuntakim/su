@@ -9,13 +9,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import su.android.color.Colors;
 
 public class Switch extends android.widget.Switch {
 
-    private int trackColorOn = Colors.SYSTEMACCENT1_600;
+    private int trackColorOn = 0xFF2196F3;
     private int trackColorOff = 0xFFD1D1D1;
-    private int thumbColor = Colors.WHITE;
+    private int thumbColor = 0xFFFFFFFF;
 
     private float progress = 0f;
     private float stretch = 0f;
@@ -72,7 +71,14 @@ public class Switch extends android.widget.Switch {
         boolean changed = isChecked() != checked;
         super.setChecked(checked);
         if (changed) {
-            animateToState(checked);
+            if (isAttachedToWindow() && getVisibility() == VISIBLE) {
+                animateToState(checked);
+            } else {
+                if (animator != null) animator.cancel();
+                progress = checked ? 1.0f : 0.0f;
+                stretch = 0f;
+                invalidate();
+            }
         }
     }
 
