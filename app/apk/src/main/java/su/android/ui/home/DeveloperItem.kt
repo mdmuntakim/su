@@ -33,6 +33,10 @@ private interface MAImpl : Dev {
     override val name get() = "mikailamin"
 }
 
+private interface MUNTAKIMImpl : Dev {
+    override val name get() = "iammuntakim"
+}
+
 sealed class DeveloperItem : Dev {
 
     abstract val items: List<IconLink>
@@ -83,6 +87,14 @@ sealed class DeveloperItem : Dev {
         override val items =
             listOf(
                 object : IconLink.Github.User() { override val name = "mikailamin-master" },
+                IconLink.Source
+            )
+    }
+    
+    object iammuntakim: DeveloperItem(), MAImpl {
+        override val items =
+            listOf(
+                object : IconLink.Github.User() { override val name = "iammuntakim" },
                 IconLink.Source
             )
     }
