@@ -9,7 +9,9 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,123 +20,114 @@ public class CardView extends LinearLayout {
 
     private int cardBackgroundColor = 0xFFFFFFFF;
     private int cornerRadius;
-    private int cardPadding;
     
-    private LinearLayout contentLayout;
+    private LinearLayout mainContentLayout;
     private TextView titleView;
-    private TextView subtitleView;
-    private ImageView iconView;
-    private ImageView chevronView;
+    private TextView descriptionView;
+    private FrameLayout customActionContainer;
+    private View separator;
+    private LinearLayout buttonContainer;
     
     private float density;
 
     public CardView(Context context) {
         super(context);
-        init(context, null);
+        init(context);
     }
 
     public CardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+        init(context);
     }
 
-    public CardView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs);
-    }
-
-    private void init(Context context, AttributeSet attrs) {
+    private void init(Context context) {
         density = context.getResources().getDisplayMetrics().density;
+        cornerRadius = (int) (14 * density);
         
-        cornerRadius = (int) (12 * density);
-        cardPadding = (int) (16 * density);
-        
-        setOrientation(HORIZONTAL);
-        setGravity(Gravity.CENTER_VERTICAL);
-        setClickable(true);
-        setFocusable(true);
-        
+        setOrientation(VERTICAL);
+        setGravity(Gravity.CENTER);
         updateBackground();
-        setPadding(cardPadding, (int) (12 * density), cardPadding, (int) (12 * density));
 
-        iconView = new ImageView(context);
-        LayoutParams iconParams = new LayoutParams((int) (28 * density), (int) (28 * density));
-        iconParams.setMarginEnd((int) (16 * density));
-        iconView.setLayoutParams(iconParams);
-        iconView.setVisibility(GONE);
-        addView(iconView);
-
-        contentLayout = new LinearLayout(context);
-        contentLayout.setOrientation(VERTICAL);
-        LayoutParams contentParams = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
-        contentLayout.setLayoutParams(contentParams);
-
+        mainContentLayout = new LinearLayout(context);
+        mainContentLayout.setOrientation(VERTICAL);
+        mainContentLayout.setPadding((int) (20 * density), (int) (20 * density), (int) (20 * density), (int) (20 * density));
+        mainContentLayout.setGravity(Gravity.CENTER);
+        
         titleView = new TextView(context);
-        titleView.setTextSize(17);
+        titleView.setTextSize(18);
         titleView.setTextColor(0xFF000000);
-        titleView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-        contentLayout.addView(titleView);
+        titleView.setGravity(Gravity.CENTER);
+        titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        mainContentLayout.addView(titleView);
 
-        subtitleView = new TextView(context);
-        subtitleView.setTextSize(14);
-        subtitleView.setTextColor(0xFF8E8E93);
-        subtitleView.setVisibility(GONE);
-        subtitleView.setPadding(0, (int) (2 * density), 0, 0);
-        contentLayout.addView(subtitleView);
+        descriptionView = new TextView(context);
+        descriptionView.setTextSize(14);
+        descriptionView.setTextColor(0xFF000000);
+        descriptionView.setGravity(Gravity.CENTER);
+        descriptionView.setPadding(0, (int) (8 * density), 0, 0);
+        mainContentLayout.addView(descriptionView);
 
-        addView(contentLayout);
+        customActionContainer = new FrameLayout(context);
+        mainContentLayout.addView(customActionContainer);
+        
+        addView(mainContentLayout);
 
-        chevronView = new ImageView(context);
-        LayoutParams chevronParams = new LayoutParams((int) (14 * density), (int) (14 * density));
-        chevronView.setLayoutParams(chevronParams);
-        chevronView.setColorFilter(0xFFC7C7CC);
-        chevronView.setVisibility(VISIBLE);
-        addView(chevronView);
+        separator = new View(context);
+        separator.setBackgroundColor(0xFFE0E0E0);
+        addView(separator, new LayoutParams(LayoutParams.MATCH_PARENT, (int) (1 * density)));
+
+        buttonContainer = new LinearLayout(context);
+        buttonContainer.setOrientation(HORIZONTAL);
+        buttonContainer.setDividerDrawable(new ShapeDrawable(new RoundRectShape(new float[]{0,0,0,0,0,0,0,0}, null, null)));
+        buttonContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        addView(buttonContainer, new LayoutParams(LayoutParams.MATCH_PARENT, (int) (50 * density)));
     }
 
     private void updateBackground() {
-        float[] outerRadii = new float[]{cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius};
-        RoundRectShape shape = new RoundRectShape(outerRadii, null, null);
-        ShapeDrawable shapeDrawable = new ShapeDrawable(shape);
-        shapeDrawable.getPaint().setColor(cardBackgroundColor);
-
-        RippleDrawable rippleDrawable = new RippleDrawable(
-                ColorStateList.valueOf(Color.parseColor("#1F000000")),
-                shapeDrawable,
-                shapeDrawable
-        );
-        setBackground(rippleDrawable);
+        float[] radii = new float[]{cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius};
+        ShapeDrawable shape = new ShapeDrawable(new RoundRectShape(radii, null, null));
+        shape.getPaint().setColor(cardBackgroundColor);
+        setBackground(shape);
     }
 
     public void setTitle(String text) {
         titleView.setText(text);
     }
 
-    public void setSubtitle(String text) {
-        if (text == null || text.isEmpty()) {
-            subtitleView.setVisibility(GONE);
-        } else {
-            subtitleView.setVisibility(VISIBLE);
-            subtitleView.setText(text);
+    public void setDescription(String text) {
+        descriptionView.setText(text);
+    }
+
+    public void addActionView(View view) {
+        customActionContainer.removeAllViews();
+        if (view != null) {
+            customActionContainer.setPadding(0, (int) (16 * density), 0, 0);
+            customActionContainer.addView(view);
         }
     }
 
-    public void setIcon(int resId) {
-        if (resId == 0) {
-            iconView.setVisibility(GONE);
-        } else {
-            iconView.setVisibility(VISIBLE);
-            iconView.setImageResource(resId);
+    public void addButton(String text, int textColor, OnClickListener listener) {
+        if (buttonContainer.getChildCount() > 0) {
+            View vLine = new View(getContext());
+            vLine.setBackgroundColor(0xFFE0E0E0);
+            buttonContainer.addView(vLine, new LayoutParams((int) (1 * density), LayoutParams.MATCH_PARENT));
         }
-    }
 
-    public void setIconBackgroundColor(int color) {
-        float[] radii = new float[]{8 * density, 8 * density, 8 * density, 8 * density, 8 * density, 8 * density, 8 * density, 8 * density};
-        ShapeDrawable bg = new ShapeDrawable(new RoundRectShape(radii, null, null));
-        bg.getPaint().setColor(color);
-        iconView.setBackground(bg);
-        int p = (int) (5 * density);
-        iconView.setPadding(p, p, p, p);
+        TextView btn = new TextView(getContext());
+        btn.setText(text);
+        btn.setTextColor(textColor);
+        btn.setTextSize(17);
+        btn.setGravity(Gravity.CENTER);
+        btn.setClickable(true);
+        btn.setFocusable(true);
+        btn.setOnClickListener(listener);
+        
+        float[] radii = new float[]{0,0,0,0,cornerRadius,cornerRadius,cornerRadius,cornerRadius};
+        ShapeDrawable mask = new ShapeDrawable(new RoundRectShape(radii, null, null));
+        RippleDrawable ripple = new RippleDrawable(ColorStateList.valueOf(0x1F000000), null, mask);
+        btn.setBackground(ripple);
+
+        buttonContainer.addView(btn, new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f));
     }
 
     public void setCardBackgroundColor(int color) {
@@ -142,29 +135,13 @@ public class CardView extends LinearLayout {
         updateBackground();
     }
 
-    public void setCornerRadius(int radiusDp) {
-        this.cornerRadius = (int) (radiusDp * density);
-        updateBackground();
-    }
-
-    public void showChevron(boolean show) {
-        chevronView.setVisibility(show ? VISIBLE : GONE);
-    }
-
-    public TextView getTitleView() {
-        return titleView;
-    }
-
-    public TextView getSubtitleView() {
-        return subtitleView;
-    }
-
-    public ImageView getIconView() {
-        return iconView;
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int maxWidth = (int) (300 * density);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        if (widthSize > maxWidth) {
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(maxWidth, MeasureSpec.EXACTLY);
+        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }
