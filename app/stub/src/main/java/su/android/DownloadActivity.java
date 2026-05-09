@@ -98,7 +98,6 @@ public class DownloadActivity extends Activity {
 
     private void showDialog() {
         new Dialog(MainActivity.this)
-                .setCancelable(false)
                 .setTitle(APP_NAME)
                 .setMessage(getString(upgrade_msg))
                 .setRightButton(yes, (d, w) -> openInBrowser())
