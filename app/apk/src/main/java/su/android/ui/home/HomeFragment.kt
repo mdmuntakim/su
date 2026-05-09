@@ -1,5 +1,6 @@
 package su.android.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.MenuProvider
 import su.android.R
 import su.android.arch.BaseFragment
@@ -50,7 +52,6 @@ class HomeFragment : BaseFragment<FragmentHomeMd2Binding>(), MenuProvider {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        // If titles are squished, hide icons
         with(binding.homeMagiskWrapper) {
             checkTitle(homeMagiskTitle, homeMagiskIcon)
         }
@@ -69,6 +70,7 @@ class HomeFragment : BaseFragment<FragmentHomeMd2Binding>(), MenuProvider {
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_terminal -> launchTermux()
             R.id.action_settings ->
                 activity?.let {
                     NavigationActivity.navigate(
@@ -78,9 +80,22 @@ class HomeFragment : BaseFragment<FragmentHomeMd2Binding>(), MenuProvider {
                     )
                 }
             R.id.action_reboot -> activity?.let { RebootMenu.inflate(it).show() }
-            else -> return super.onOptionsItemSelected(item)
+            else -> return false
         }
         return true
+    }
+
+    private fun launchTermux() {
+        val packageName = "com.termux"
+        val pm = context?.packageManager
+        val intent = pm?.getLaunchIntentForPackage(packageName)
+
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } else {
+            Toast.makeText(context, "Termux is not installed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onResume() {
