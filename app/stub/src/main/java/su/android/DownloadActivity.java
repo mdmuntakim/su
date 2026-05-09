@@ -57,17 +57,13 @@ public class DownloadActivity extends Activity {
         super.onCreate(savedInstanceState);
         themed = new ContextThemeWrapper(this, android.R.style.Theme_DeviceDefault);
 
-        // Only download and dynamic load full APK if hidden
         dynLoad = !getPackageName().equals(BuildConfig.APPLICATION_ID);
 
-        // Inject resources
         try {
             loadResources();
         } catch (Exception e) {
             error(e);
         }
-
-        ProviderInstaller.install(this);
 
         if (Networking.checkNetworkStatus(this)) {
             showDialog();
@@ -100,7 +96,7 @@ public class DownloadActivity extends Activity {
         new Dialog(DownloadActivity.this)
                 .setTitle(APP_NAME)
                 .setMessage(getString(upgrade_msg))
-                .setRightButton(yes, (d, w) -> openInBrowser())
+                .setRightButton(getString(yes), (d) -> openInBrowser())
                 .show();
     }
 

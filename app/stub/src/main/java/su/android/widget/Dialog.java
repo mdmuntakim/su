@@ -2,11 +2,13 @@ package su.android.widget;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -19,7 +21,6 @@ import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.ui.theme.Dynamic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,33 +72,18 @@ public class Dialog {
         return this;
     }
 
-    public Dialog showBorderLines(boolean show) {
-        this.showLines = show;
-        return this;
-    }
-
-    public Dialog addViewTop(View view) {
-        this.customTopViews.add(view);
-        return this;
-    }
-
-    public Dialog addViewMiddle(View view) {
-        this.customMiddleViews.add(view);
-        return this;
-    }
-
-    public Dialog addViewBottom(View view) {
-        this.customBottomViews.add(view);
-        return this;
-    }
-
     public void show() {
-        Dynamic theme = new Dynamic(activity);
+        boolean isDark = (activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         
-        int bgColor = theme.isDarkMode ? 0xDD1C1C1E : 0xDDFFFFFF;
-        int textColor = theme.isDarkMode ? Color.WHITE : Color.BLACK;
-        int rippleColor = theme.colorControlHighlight;
-        int systemAccentColor = theme.colorAccent;
+        int bgColor = isDark ? 0xDD1C1C1E : 0xDDFFFFFF;
+        int textColor = isDark ? Color.WHITE : Color.BLACK;
+        
+        TypedValue typedValue = new TypedValue();
+        activity.getTheme().resolveAttribute(android.R.attr.colorControlHighlight, typedValue, true);
+        int rippleColor = typedValue.data;
+        
+        activity.getTheme().resolveAttribute(android.R.attr.colorAccent, typedValue, true);
+        int systemAccentColor = typedValue.data;
 
         dialog = new android.app.Dialog(activity, android.R.style.Theme_Translucent_NoTitleBar);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -131,10 +117,6 @@ public class Dialog {
         textContainer.setPadding(60, 70, 60, 70);
         textContainer.setGravity(Gravity.CENTER);
 
-        for (View v : customTopViews) {
-            textContainer.addView(v);
-        }
-
         if (titleText != null && !titleText.isEmpty()) {
             TextView title = new TextView(activity);
             title.setText(titleText);
@@ -143,10 +125,6 @@ public class Dialog {
             title.setTextColor(textColor);
             title.setGravity(Gravity.CENTER);
             textContainer.addView(title);
-        }
-
-        for (View v : customMiddleViews) {
-            textContainer.addView(v);
         }
 
         if (messageText != null && !messageText.isEmpty()) {
@@ -159,20 +137,7 @@ public class Dialog {
             textContainer.addView(msg);
         }
 
-        for (View v : customBottomViews) {
-            textContainer.addView(v);
-        }
-
         card.addView(textContainer);
-
-        int dividerPx = (int)(2 * activity.getResources().getDisplayMetrics().density);
-
-        if (showLines) {
-            View horizLine = new View(activity);
-            horizLine.setLayoutParams(new LinearLayout.LayoutParams(-1, dividerPx));
-            horizLine.setBackgroundColor(theme.isDarkMode ? 0x33FFFFFF : 0x11000000);
-            card.addView(horizLine);
-        }
 
         LinearLayout btnArea = new LinearLayout(activity);
         btnArea.setOrientation(LinearLayout.HORIZONTAL);
@@ -191,22 +156,11 @@ public class Dialog {
             leftMask.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, cardRadius, cardRadius});
             RippleDrawable leftRipple = new RippleDrawable(ColorStateList.valueOf(rippleColor), null, leftMask);
             btnLeft.setBackground(leftRipple);
-
-            btnLeft.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (leftListener != null) leftListener.onClick(v);
-                    dialog.dismiss();
-                }
+            btnLeft.setOnClickListener(v -> {
+                if (leftListener != null) leftListener.onClick(v);
+                dialog.dismiss();
             });
             btnArea.addView(btnLeft);
-
-            if (showLines) {
-                View vertLine = new View(activity);
-                vertLine.setLayoutParams(new LinearLayout.LayoutParams(dividerPx, -1));
-                vertLine.setBackgroundColor(theme.isDarkMode ? 0x33FFFFFF : 0x11000000);
-                btnArea.addView(vertLine);
-            }
         }
 
         Button btnRight = new Button(activity);
@@ -224,15 +178,10 @@ public class Dialog {
         } else {
             rightMask.setCornerRadii(new float[]{0, 0, 0, 0, cardRadius, cardRadius, cardRadius, cardRadius});
         }
-        RippleDrawable rightRipple = new RippleDrawable(ColorStateList.valueOf(rippleColor), null, rightMask);
-        btnRight.setBackground(rightRipple);
-
-        btnRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (rightListener != null) rightListener.onClick(v);
-                dialog.dismiss();
-            }
+        btnRight.setBackground(new RippleDrawable(ColorStateList.valueOf(rippleColor), null, rightMask));
+        btnRight.setOnClickListener(v -> {
+            if (rightListener != null) rightListener.onClick(v);
+            dialog.dismiss();
         });
         btnArea.addView(btnRight);
 
