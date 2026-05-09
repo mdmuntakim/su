@@ -85,6 +85,6 @@
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </su.android.widget.CardView>
 
 </layout>
