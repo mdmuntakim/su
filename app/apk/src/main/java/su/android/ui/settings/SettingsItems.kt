@@ -32,22 +32,6 @@ object Customization : BaseSettingsItem.Section() {
     override val title = CoreR.string.settings_customization.asText()
 }
 
-object Language : BaseSettingsItem.Selector() {
-    private val names: Array<String> get() = LocaleSetting.available.names
-    private val tags: Array<String> get() = LocaleSetting.available.tags
-
-    override var value
-        get() = tags.indexOf(Config.locale)
-        set(value) {
-            Config.locale = tags[value]
-        }
-
-    override val title = CoreR.string.language.asText()
-
-    override fun entries(res: Resources) = names
-    override fun descriptions(res: Resources) = names
-}
-
 object LanguageSystem : BaseSettingsItem.Blank() {
     override val title = CoreR.string.language.asText()
     override val description: TextHolder
@@ -65,7 +49,7 @@ object Theme : BaseSettingsItem.Blank() {
 // --- App
 
 object AppSettings : BaseSettingsItem.Section() {
-    override val title = CoreR.string.home_app_title.asText()
+    override val title = CoreR.string.settings_app_title.asText()
 }
 
 object Hide : BaseSettingsItem.Input() {
@@ -202,7 +186,7 @@ object RandNameToggle : BaseSettingsItem.Toggle() {
 // --- Magisk
 
 object Magisk : BaseSettingsItem.Section() {
-    override val title = CoreR.string.magisk.asText()
+    override val title = CoreR.string.settings_name.asText()
 }
 
 object Zygisk : BaseSettingsItem.Toggle() {
@@ -265,7 +249,7 @@ object Authentication : BaseSettingsItem.Toggle() {
 }
 
 object Superuser : BaseSettingsItem.Section() {
-    override val title = CoreR.string.superuser.asText()
+    override val title = CoreR.string.settings_superuser.asText()
 }
 
 object AccessMode : BaseSettingsItem.Selector() {

@@ -23,6 +23,7 @@ import android.system.Os;
 import android.system.OsConstants;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import su.android.widget.Dialog;
 
 import su.android.net.Networking;
 import su.android.net.Request;
@@ -46,7 +47,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class DownloadActivity extends Activity {
 
-    private static final String APP_NAME = "Magisk";
+    private static final String APP_NAME = "SuperSU";
 
     private Context themed;
     private boolean dynLoad;
@@ -96,12 +97,11 @@ public class DownloadActivity extends Activity {
     }
 
     private void showDialog() {
-        new AlertDialog.Builder(themed)
+        new Dialog(MainActivity.this)
                 .setCancelable(false)
                 .setTitle(APP_NAME)
                 .setMessage(getString(upgrade_msg))
-                .setPositiveButton(yes, (d, w) -> openInBrowser())
-                .setNegativeButton(no, (d, w) -> finish())
+                .setRightButton(yes, (d, w) -> openInBrowser())
                 .show();
     }
 
@@ -119,7 +119,6 @@ public class DownloadActivity extends Activity {
 
     private void dlAPK() {
         ProgressDialog.show(themed, getString(dling), getString(dling) + " " + APP_NAME, true);
-        // Download and upgrade the app
         var request = request(BuildConfig.APK_URL).setExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         if (dynLoad) {
             request.getAsFile(StubApk.current(this), file -> StubApk.restartProcess(this));
@@ -168,7 +167,6 @@ public class DownloadActivity extends Activity {
         } else {
             File res = new File(getCodeCacheDir(), "res.apk");
             try (var out = new ZipOutputStream(new FileOutputStream(res))) {
-                // AndroidManifest.xml is required on Android 6-, and directory support is broken on Android 9-10
                 out.putNextEntry(new ZipEntry("AndroidManifest.xml"));
                 try (var stubApk = new ZipFile(getPackageCodePath())) {
                     APKInstall.transfer(stubApk.getInputStream(stubApk.getEntry("AndroidManifest.xml")), out);

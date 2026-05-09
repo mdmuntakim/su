@@ -91,10 +91,10 @@ class HomeFragment : BaseFragment<FragmentHomeMd2Binding>(), MenuProvider {
         val intent = pm?.getLaunchIntentForPackage(packageName)
 
         if (intent != null) {
+        Toast.makeText(context, "Use Termux as a Terminal now", Toast.LENGTH_SHORT).show()
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         } else {
-            // Fallback if Termux is not installed
             Toast.makeText(context, "Termux is not installed", Toast.LENGTH_SHORT).show()
         }
     }
