@@ -2,11 +2,13 @@ package su.android.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -15,8 +17,8 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
     private Paint scrollBarPaint;
     private RectF scrollBarRect;
     private float density;
-    private int iosBgColor = 0xFFF2F2F7;
-    private int scrollBarColor = 0x4D000000;
+    private static final int PURE_WHITE = 0xFFFFFFFF;
+    private int scrollBarColor = 0x33000000;
 
     public RecyclerView(@NonNull Context context) {
         super(context);
@@ -35,18 +37,36 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
 
     private void init(Context context) {
         density = context.getResources().getDisplayMetrics().density;
-        setBackgroundColor(iosBgColor);
+        setBackgroundColor(PURE_WHITE);
         setOverScrollMode(OVER_SCROLL_ALWAYS);
         setVerticalScrollBarEnabled(false);
         
         scrollBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         scrollBarPaint.setColor(scrollBarColor);
         scrollBarRect = new RectF();
+
+        addItemDecoration(new ItemDecoration(context));
+
+        addOnChildAttachStateChangeListener(new OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(@NonNull View view) {
+                applyStyle(view);
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(@NonNull View view) {}
+        });
     }
 
-    @Override
-    public void onDraw(Canvas c) {
-        super.onDraw(c);
+    private void applyStyle(View view) {
+        if (view instanceof TextView) {
+            ((TextView) view).setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        } else if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                applyStyle(group.getChildAt(i));
+            }
+        }
     }
 
     @Override
@@ -64,8 +84,8 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
 
         float width = getWidth();
         float height = getHeight();
-        float thickness = 3 * density;
-        float margin = 4 * density;
+        float thickness = 4 * density;
+        float margin = 3 * density;
 
         float scrollBarHeight = (height * extent) / range;
         float scrollBarTop = (height * offset) / range;
@@ -77,22 +97,17 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
             scrollBarTop + scrollBarHeight - margin
         );
 
-        canvas.drawRoundRect(scrollBarRect, thickness / 2, thickness / 2, scrollBarPaint);
-    }
-
-    public void setIosBackground(int color) {
-        this.iosBgColor = color;
-        setBackgroundColor(iosBgColor);
+        canvas.drawRoundRect(scrollBarRect, thickness, thickness, scrollBarPaint);
     }
 
     public static class ItemDecoration extends androidx.recyclerview.widget.RecyclerView.ItemDecoration {
-        private Paint paint;
-        private float margin;
+        private final Paint paint;
+        private final float margin;
 
         public ItemDecoration(Context context) {
             paint = new Paint();
-            paint.setColor(0x4D3C3C43);
-            paint.setStrokeWidth(0.5f * context.getResources().getDisplayMetrics().density);
+            paint.setColor(0x1F000000); 
+            paint.setStrokeWidth(0.6f * context.getResources().getDisplayMetrics().density);
             margin = 16 * context.getResources().getDisplayMetrics().density;
         }
 
