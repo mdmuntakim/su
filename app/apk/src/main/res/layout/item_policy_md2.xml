@@ -103,7 +103,7 @@
                             android:layout_height="wrap_content"
                             android:checked="@={item.enabled}" />
 
-                        <com.google.android.material.slider.Slider
+                        <su.android.widget.Slider
                             goneUnless="@{item.showSlider}"
                             labelFormatter="@{item.sliderValueToPolicyString}"
                             android:layout_width="96dp"
