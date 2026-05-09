@@ -32,6 +32,22 @@ object Customization : BaseSettingsItem.Section() {
     override val title = CoreR.string.settings_customization.asText()
 }
 
+object Language : BaseSettingsItem.Selector() {
+    private val names: Array<String> get() = LocaleSetting.available.names
+    private val tags: Array<String> get() = LocaleSetting.available.tags
+
+    override var value
+        get() = tags.indexOf(Config.locale)
+        set(value) {
+            Config.locale = tags[value]
+        }
+
+    override val title = CoreR.string.language.asText()
+
+    override fun entries(res: Resources) = names
+    override fun descriptions(res: Resources) = names
+}
+
 object LanguageSystem : BaseSettingsItem.Blank() {
     override val title = CoreR.string.language.asText()
     override val description: TextHolder
