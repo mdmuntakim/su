@@ -7,11 +7,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
 
@@ -20,17 +19,17 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
     private float density;
     private int scrollBarColor = 0x33000000;
 
-    public RecyclerView(@NonNull Context context) {
+    public RecyclerView(Context context) {
         super(context);
         init(context);
     }
 
-    public RecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public RecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public RecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public RecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -49,12 +48,13 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
 
         addOnChildAttachStateChangeListener(new OnChildAttachStateChangeListener() {
             @Override
-            public void onChildViewAttachedToWindow(@NonNull View view) {
+            public void onChildViewAttachedToWindow(View view) {
                 applyStyle(view);
+                applyRippleEffect(view);
             }
 
             @Override
-            public void onChildViewDetachedFromWindow(@NonNull View view) {}
+            public void onChildViewDetachedFromWindow(View view) {}
         });
     }
 
@@ -67,6 +67,14 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
                 applyStyle(group.getChildAt(i));
             }
         }
+    }
+
+    private void applyRippleEffect(View view) {
+        TypedValue outValue = new TypedValue();
+        view.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        view.setBackgroundResource(outValue.resourceId);
+        view.setClickable(true);
+        view.setFocusable(true);
     }
 
     @Override
@@ -110,7 +118,7 @@ public class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
         }
 
         @Override
-        public void onDrawOver(@NonNull Canvas c, @NonNull androidx.recyclerview.widget.RecyclerView parent, @NonNull State state) {
+        public void onDrawOver(Canvas c, androidx.recyclerview.widget.RecyclerView parent, State state) {
             int childCount = parent.getChildCount();
             for (int i = 0; i < childCount - 1; i++) {
                 View child = parent.getChildAt(i);
