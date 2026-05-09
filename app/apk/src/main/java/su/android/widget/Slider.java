@@ -28,24 +28,22 @@ public class Slider extends com.google.android.material.slider.Slider {
         boolean isDark = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
 
         int mainColor = isDark ? Color.WHITE : Color.BLACK;
-        int secondaryColor = isDark ? Color.BLACK : Color.WHITE;
         int trackAlphaColor = isDark ? Color.argb(77, 255, 255, 255) : Color.argb(77, 0, 0, 0);
 
         setThumbColor(ColorStateList.valueOf(mainColor));
         setTrackActiveColor(ColorStateList.valueOf(mainColor));
         setTrackInactiveColor(ColorStateList.valueOf(trackAlphaColor));
-        setTickActiveColor(ColorStateList.valueOf(secondaryColor));
-        setTickInactiveColor(ColorStateList.valueOf(mainColor));
-        setHaloColor(ColorStateList.valueOf(Color.TRANSPARENT));
+        setTickVisible(false);
+        setHaloRadius(0);
 
         float density = getContext().getResources().getDisplayMetrics().density;
         float radius = 24f * density;
 
-        setShapeAppearanceModel(
-            getShapeAppearanceModel()
-                .toBuilder()
+        com.google.android.material.shape.ShapeAppearanceModel shapeModel = 
+            new com.google.android.material.shape.ShapeAppearanceModel.Builder()
                 .setAllCornerSizes(radius)
-                .build()
-        );
+                .build();
+                
+        setShapeAppearanceModel(shapeModel);
     }
 }
