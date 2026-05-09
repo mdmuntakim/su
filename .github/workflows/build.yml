@@ -70,6 +70,7 @@ jobs:
               uses: ./.github/actions/setup
               with:
                   is-asset-build: true
+
             - name: Build Magisk
               run: |
                   if [ "${{ matrix.build_type }}" = "release" ]; then
@@ -77,16 +78,25 @@ jobs:
                   else
                       python build.py -v all
                   fi
+            - name: Upload Build Report on Failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: gradle-error-reports
+                  path: "**/build/reports/problems/"
+
             - name: Stop Gradle
               run: ./app/gradlew --stop
 
             - name: Upload artifact
+              if: success()
               uses: actions/upload-artifact@v4
               with:
                   name: magisk_${{ matrix.build_type }}
                   path: out/app-release.apk
 
             - name: Create GitHub Release
+              if: success()
               env:
                   GH_TOKEN: ${{ secrets.PAT_TOKEN }}
               run: |

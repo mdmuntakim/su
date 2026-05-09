@@ -33,7 +33,7 @@ public class CardView extends MaterialCardView {
 
         setCardBackgroundColor(isDark ? Color.BLACK : Color.WHITE);
         setStrokeWidth(0);
-        setCardElevation(0f);
+        setCardElevation(1f);
         setRippleColorResource(android.R.color.transparent);
 
         float density = getContext().getResources().getDisplayMetrics().density;
