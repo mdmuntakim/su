@@ -15,7 +15,7 @@
 
     </data>
 
-    <com.google.android.material.card.MaterialCardView
+    <su.android.widget.CardView
         style="@style/WidgetFoundation.Card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <su.android.widget.CardView
                 android:id="@+id/theme_card_bottom"
                 style="@style/WidgetFoundation.Card"
                 android:layout_width="0dp"
@@ -103,7 +103,7 @@
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </su.android.widget.CardView>
 
             <LinearLayout
                 android:id="@+id/theme_primary"
@@ -136,7 +136,7 @@
 
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <su.android.widget.CardView
                 android:id="@+id/theme_navigation"
                 style="@style/WidgetFoundation.Card.Elevated"
                 android:layout_width="wrap_content"
@@ -165,7 +165,7 @@
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </su.android.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -178,6 +178,6 @@
             app:srcCompat="@drawable/ic_check_md2"
             app:tint="#fff" />
 
-    </com.google.android.material.card.MaterialCardView>
+    </su.android.widget.CardView>
 
 </layout>

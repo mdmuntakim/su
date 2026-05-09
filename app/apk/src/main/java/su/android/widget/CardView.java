@@ -1,10 +1,14 @@
 package su.android.widget;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.shape.ShapeAppearanceModel;
 
 public class CardView extends MaterialCardView {
 
@@ -24,13 +28,16 @@ public class CardView extends MaterialCardView {
     }
 
     private void init() {
-        setCardBackgroundColor(Color.WHITE);
+        int nightModeFlags = getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        boolean isDark = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+
+        setCardBackgroundColor(isDark ? Color.BLACK : Color.WHITE);
         setStrokeWidth(0);
         setCardElevation(0f);
         setRippleColorResource(android.R.color.transparent);
-        
+
         float density = getContext().getResources().getDisplayMetrics().density;
-        float radius = 24f * density; 
+        float radius = 24f * density;
 
         setShapeAppearanceModel(
             getShapeAppearanceModel()
@@ -41,18 +48,25 @@ public class CardView extends MaterialCardView {
     }
 
     @Override
-    public void addView(android.view.View child, int index, android.view.ViewGroup.LayoutParams params) {
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
         super.addView(child, index, params);
-        applyBlackText(child);
+        updateChildStyle(child);
     }
 
-    private void applyBlackText(android.view.View view) {
-        if (view instanceof android.widget.TextView) {
-            ((android.widget.TextView) view).setTextColor(Color.BLACK);
-        } else if (view instanceof android.view.ViewGroup) {
-            android.view.ViewGroup group = (android.view.ViewGroup) view;
+    private void updateChildStyle(View view) {
+        int nightModeFlags = getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        boolean isDark = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+        int textColor = isDark ? Color.WHITE : Color.BLACK;
+        Typeface tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+
+        if (view instanceof TextView) {
+            TextView tv = (TextView) view;
+            tv.setTextColor(textColor);
+            tv.setTypeface(tf);
+        } else if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
             for (int i = 0; i < group.getChildCount(); i++) {
-                applyBlackText(group.getChildAt(i));
+                updateChildStyle(group.getChildAt(i));
             }
         }
     }

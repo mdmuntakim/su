@@ -32,7 +32,7 @@
             android:orientation="vertical"
             android:paddingTop="@dimen/l_50">
 
-            <com.google.android.material.card.MaterialCardView
+            <su.android.widget.CardView
                 style="@style/WidgetFoundation.Card"
                 gone="@{viewModel.skipOptions}"
                 android:layout_width="match_parent"
@@ -121,9 +121,9 @@
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </su.android.widget.CardView>
 
-            <com.google.android.material.card.MaterialCardView
+            <su.android.widget.CardView
                 style="@style/WidgetFoundation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -210,9 +210,9 @@
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </su.android.widget.CardView>
 
-            <com.google.android.material.card.MaterialCardView
+            <su.android.widget.CardView
                 style="@style/WidgetFoundation.Card"
                 gone="@{viewModel.notes.length == 0}"
                 android:layout_width="match_parent"
@@ -236,7 +236,7 @@
                     tools:text="@tools:sample/lorem/random"
                     tools:visibility="visible" />
 
-            </com.google.android.material.card.MaterialCardView>
+            </su.android.widget.CardView>
 
         </LinearLayout>
 

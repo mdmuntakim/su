@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <com.google.android.material.card.MaterialCardView
+        <su.android.widget.CardView
             android:id="@+id/policy"
             style="@style/WidgetFoundation.Card"
             android:layout_width="match_parent"
@@ -193,7 +193,7 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </su.android.widget.CardView>
 
     </FrameLayout>
 
