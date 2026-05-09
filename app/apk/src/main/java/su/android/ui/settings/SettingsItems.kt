@@ -65,7 +65,7 @@ object Theme : BaseSettingsItem.Blank() {
 // --- App
 
 object AppSettings : BaseSettingsItem.Section() {
-    override val title = CoreR.string.home_app_title.asText()
+    override val title = CoreR.string.settings_app_title.asText()
 }
 
 object Hide : BaseSettingsItem.Input() {
@@ -202,7 +202,7 @@ object RandNameToggle : BaseSettingsItem.Toggle() {
 // --- Magisk
 
 object Magisk : BaseSettingsItem.Section() {
-    override val title = CoreR.string.magisk.asText()
+    override val title = CoreR.string.app_name.asText()
 }
 
 object Zygisk : BaseSettingsItem.Toggle() {
@@ -265,7 +265,7 @@ object Authentication : BaseSettingsItem.Toggle() {
 }
 
 object Superuser : BaseSettingsItem.Section() {
-    override val title = CoreR.string.superuser.asText()
+    override val title = CoreR.string.settings_superuser.asText()
 }
 
 object AccessMode : BaseSettingsItem.Selector() {
