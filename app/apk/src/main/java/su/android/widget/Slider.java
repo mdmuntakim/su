@@ -5,9 +5,8 @@ import android.content.res.Configuration;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import com.google.android.material.slider.Slider;
 
-public class Slider extends Slider {
+public class Slider extends com.google.android.material.slider.Slider {
 
     public Slider(Context context) {
         super(context);
