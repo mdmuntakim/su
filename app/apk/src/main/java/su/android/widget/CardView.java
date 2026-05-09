@@ -2,18 +2,13 @@ package su.android.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +59,7 @@ public class CardView extends LinearLayout {
 
         iconView = new ImageView(context);
         LayoutParams iconParams = new LayoutParams((int) (28 * density), (int) (28 * density));
-        iconParams.marginEnd = (int) (16 * density);
+        iconParams.setMarginEnd((int) (16 * density));
         iconView.setLayoutParams(iconParams);
         iconView.setVisibility(GONE);
         addView(iconView);
