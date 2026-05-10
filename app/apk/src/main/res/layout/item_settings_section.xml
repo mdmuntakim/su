@@ -18,13 +18,13 @@
         android:paddingBottom="@dimen/l_50">
 
         <TextView
-            gone="@{item.title.empty}"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{item.title}"
-            android:textAppearance="@style/AppearanceFoundation.Large.Secondary"
-            android:textStyle="bold"
-            tools:text="@tools:sample/lorem" />
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    gone="@{true}"
+    android:text="@{item.title}"
+    android:textAppearance="@style/AppearanceFoundation.Large.Secondary"
+    android:textStyle="bold"
+    tools:text="@tools:sample/lorem" />
 
         <TextView
             gone="@{item.description.empty}"

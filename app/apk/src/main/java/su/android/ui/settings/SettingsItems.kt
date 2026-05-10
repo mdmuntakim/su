@@ -29,7 +29,7 @@ import su.android.core.R as CoreR
 // --- Customization
 
 object Customization : BaseSettingsItem.Section() {
-    override val title = CoreR.string.settings_customization.asText()
+    override val title = "".asText()
 }
 
 object Language : BaseSettingsItem.Selector() {
@@ -65,7 +65,7 @@ object Theme : BaseSettingsItem.Blank() {
 // --- App
 
 object AppSettings : BaseSettingsItem.Section() {
-    override val title = CoreR.string.home_app_title.asText()
+    override val title = "".asText()
 }
 
 object Hide : BaseSettingsItem.Input() {
@@ -202,7 +202,7 @@ object RandNameToggle : BaseSettingsItem.Toggle() {
 // --- Magisk
 
 object Magisk : BaseSettingsItem.Section() {
-    override val title = CoreR.string.magisk.asText()
+    override val title = "".asText()
 }
 
 object Zygisk : BaseSettingsItem.Toggle() {
@@ -246,7 +246,7 @@ object DenyListConfig : BaseSettingsItem.Blank() {
 // --- Superuser
 
 object Tapjack : BaseSettingsItem.Toggle() {
-    override val title = CoreR.string.settings_su_tapjack_title.asText()
+    override val title = "".asText()
     override val description = CoreR.string.settings_su_tapjack_summary.asText()
     override var value by Config::suTapjack
 }
