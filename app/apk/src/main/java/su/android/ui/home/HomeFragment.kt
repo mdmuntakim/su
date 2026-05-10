@@ -31,13 +31,15 @@ class HomeFragment : BaseFragment<FragmentHomeMd2Binding>(), MenuProvider {
         DownloadEngine.observeProgress(this, viewModel::onProgressUpdate)
     }
 
-    private fun checkTitle(text: TextView, icon: ImageView) {
+    private fun checkTitle(text: TextView, icon: ImageView?) {
         text.post {
             if (text.layout?.getEllipsisCount(0) != 0) {
-                with (icon) {
-                    layoutParams.width = 0
-                    layoutParams.height = 0
-                    requestLayout()
+                icon?.let {
+                    with(it) {
+                        layoutParams.width = 0
+                        layoutParams.height = 0
+                        requestLayout()
+                    }
                 }
             }
         }
@@ -52,7 +54,8 @@ class HomeFragment : BaseFragment<FragmentHomeMd2Binding>(), MenuProvider {
 
         // If titles are squished, hide icons
         with(binding.homeMagiskWrapper) {
-            checkTitle(homeMagiskTitle, homeMagiskIcon)
+            // homeMagiskIcon removed from here
+            checkTitle(homeMagiskTitle, null)
         }
         with(binding.homeManagerWrapper) {
             checkTitle(homeManagerTitle, homeManagerIcon)
