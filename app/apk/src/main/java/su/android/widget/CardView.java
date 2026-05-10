@@ -60,28 +60,13 @@ public class CardView extends MaterialCardView {
         int nightModeFlags = getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDark = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
         
-        int backgroundColor = isDark ? Color.BLACK : Color.WHITE;
         int iconAndTextColor = isDark ? Color.WHITE : Color.BLACK;
         Typeface tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
-
-        Drawable background = view.getBackground();
-        if (background != null) {
-            background.mutate().setColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN);
-        }
 
         if (view instanceof TextView) {
             TextView tv = (TextView) view;
             tv.setTextColor(iconAndTextColor);
             tv.setTypeface(tf);
-            Drawable[] drawables = tv.getCompoundDrawables();
-            for (Drawable d : drawables) {
-                if (d != null) {
-                    d.mutate().setColorFilter(iconAndTextColor, PorterDuff.Mode.SRC_IN);
-                }
-            }
-        } else if (view instanceof ImageView) {
-            ImageView iv = (ImageView) view;
-            iv.setColorFilter(iconAndTextColor, PorterDuff.Mode.SRC_IN);
         } else if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
             for (int i = 0; i < group.getChildCount(); i++) {
