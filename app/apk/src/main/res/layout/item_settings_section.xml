@@ -18,12 +18,11 @@
         android:paddingBottom="@dimen/l_50">
 
         <TextView
-    android:layout_width="match_parent"
+    android:layout_width="0dp"
     android:layout_height="0dp"
     gone="@{true}"
     android:text="@{item.title}"
     android:textAppearance="@style/AppearanceFoundation.Large.Secondary"
-    android:textStyle="bold"
     tools:text="@tools:sample/lorem" />
 
         <TextView
