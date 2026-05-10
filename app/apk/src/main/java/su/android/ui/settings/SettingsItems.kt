@@ -87,8 +87,12 @@ object Hide : BaseSettingsItem.Input() {
     val isError
         get() = result.length > maxLength || result.isBlank()
 
-    override fun getView(context: Context) = DialogSettingsAppNameBinding
-        .inflate(LayoutInflater.from(context)).also { it.data = this }.root
+        override fun refresh() {
+        isEnabled = Info.isDeviceSecure
+        if (!isEnabled) {
+            description = CoreR.string.none.asText()
+        }
+    }
 }
 
 object Restore : BaseSettingsItem.Blank() {
@@ -197,6 +201,13 @@ object RandNameToggle : BaseSettingsItem.Toggle() {
     override val title = CoreR.string.settings_random_name_title.asText()
     override val description = CoreR.string.settings_random_name_description.asText()
     override var value by Config::randName
+    
+      override fun refresh() {
+        isEnabled = Info.isDeviceSecure
+        if (!isEnabled) {
+            description = CoreR.string.none.asText()
+        }
+    }
 }
 
 // --- Magisk
