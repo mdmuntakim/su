@@ -19,15 +19,24 @@
             app:items="@{viewModel.items}"
             app:extraBindings="@{viewModel.extraBindings}"
             android:id="@+id/settings_list"
+<<<<<<< HEAD
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+=======
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+>>>>>>> 8814c1fb7d146c362b3dc9565cc67f9ce16c5f38
             android:focusableInTouchMode="false"
             android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingTop="@dimen/internal_action_bar_size"
             app:fitsSystemWindowsInsets="top|bottom"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+<<<<<<< HEAD
             tools:layout_marginTop="24dp"
+=======
+            tools:layout_marginTop="0dp"
+>>>>>>> 8814c1fb7d146c362b3dc9565cc67f9ce16c5f38
             tools:listitem="@layout/item_settings"
             tools:paddingTop="@dimen/l1" />
 
