@@ -10,7 +10,7 @@ interface Dev {
 }
 
 private interface UkibatsuImpl : Dev {
-    override val name get() = "ukibatsu"
+    override val name get() = "muntakim"
 }
 
 sealed class DeveloperItem : Dev {
