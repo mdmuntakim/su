@@ -1,0 +1,101 @@
+name: Build binaries
+
+on:
+    push:
+        branches: [binary]
+    workflow_dispatch:
+
+jobs:
+    native:
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y ccache zip
+                  echo "CCACHE_DIR=$HOME/.ccache" >> $GITHUB_ENV
+                  echo "CCACHE_MAXSIZE=5G" >> $GITHUB_PATH
+                  echo "/usr/lib/ccache" >> $GITHUB_PATH
+                  ccache --max-size=5G
+
+            - name: Cache ccache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.ccache
+                  key: ccache-binary-${{ github.sha }}
+                  restore-keys: |
+                      ccache-binary-
+
+            - name: Cache ONDK
+              uses: actions/cache@v4
+              with:
+                  path: ~/android
+                  key: ondk-r29.5
+
+            - name: Cache Cargo
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.cargo/registry
+                      ~/.cargo/git
+                      native/out/rust
+                  key: cargo-${{ hashFiles('native/src/Cargo.lock') }}
+                  restore-keys: |
+                      cargo-
+
+            - name: Setup ONDK and rustup
+              run: |
+                  python3 build.py ndk
+                  python3 build.py rustup
+
+            - name: Build native binaries from C++ / C / Rust sources
+              run: python3 build.py -vr native
+
+            - name: Strip and inspect binaries
+              run: |
+                  ls -la native/out/*
+                  file native/out/arm64-v8a/*
+
+            - name: Package binary.zip
+              run: |
+                  mkdir -p out/pkg
+                  for abi in armeabi-v7a arm64-v8a x86 x86_64; do
+                      mkdir -p out/pkg/$abi
+                      for f in magisk magiskinit magiskpolicy magiskboot libinit-ld.so; do
+                          if [ -f "native/out/$abi/$f" ]; then
+                              cp "native/out/$abi/$f" "out/pkg/$abi/"
+                          fi
+                      done
+                  done
+                  cd out/pkg
+                  zip -qr ../binary.zip .
+                  cd ..
+                  sha256sum binary.zip > binary.zip.sha256
+                  ls -la binary.zip*
+
+            - name: Publish release (binary.zip)
+              env:
+                  GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+              run: |
+                  tag="binary"
+                  commit=$(git rev-parse --short HEAD)
+                  build_time=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+                  body=$(printf "SuperSU native binaries built from .cpp / .c / .rs sources\n\nBranch: binary\nCommit: %s\nBuild time: %s\nActor: %s\nRepository: %s\n\nAsset: binary.zip (native/out/<abi>/ for all 4 ABIs)\n" \
+                      "$commit" "$build_time" "$GITHUB_ACTOR" "$GITHUB_REPOSITORY")
+                  gh release delete "$tag" -y --cleanup-tag || true
+                  git push origin :refs/tags/$tag || true
+                  git tag "$tag"
+                  git push origin "$tag"
+                  gh release create "$tag" out/binary.zip out/binary.zip.sha256 \
+                      --title "SuperSU native binaries" \
+                      --notes "$body"
