@@ -53,8 +53,10 @@ jobs:
                   restore-keys: |
                       cargo-
 
-            - name: Setup ONDK
-              run: python3 build.py ndk
+            - name: Setup ONDK and rustup
+              run: |
+                  python3 build.py ndk
+                  python3 build.py rustup
 
             - name: Build native binaries from C++ / C / Rust sources
               run: python3 build.py -vr native
@@ -93,7 +95,7 @@ jobs:
                   gh release delete "$tag" -y --cleanup-tag || true
                   git push origin :refs/tags/$tag || true
                   git tag "$tag"
-                  git push origin "$tag"
+                  git push origin "refs/tags/$tag"
                   gh release create "$tag" out/binary.zip out/binary.zip.sha256 \
                       --title "SuperSU native binaries" \
                       --notes "$body"
