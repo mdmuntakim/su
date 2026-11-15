@@ -53,10 +53,8 @@ jobs:
                   restore-keys: |
                       cargo-
 
-            - name: Setup ONDK and rustup
-              run: |
-                  python3 build.py ndk
-                  python3 build.py rustup
+            - name: Setup ONDK
+              run: python3 build.py -v ndk
 
             - name: Build native binaries from C++ / C / Rust sources
               run: python3 build.py -vr native
