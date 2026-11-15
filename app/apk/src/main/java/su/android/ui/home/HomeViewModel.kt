@@ -41,7 +41,7 @@ class HomeViewModel(
     }
 
     val magiskTitleBarrierIds =
-        intArrayOf(R.id.home_magisk_icon, R.id.home_magisk_title, R.id.home_magisk_button)
+        intArrayOf(R.id.home_magisk_title, R.id.home_magisk_button)
     val appTitleBarrierIds =
         intArrayOf(R.id.home_manager_icon, R.id.home_manager_title, R.id.home_manager_button)
 

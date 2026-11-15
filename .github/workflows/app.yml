@@ -59,7 +59,7 @@ jobs:
                   cd app
                   ./gradlew :apk:assembleRelease \
                       -PconfigPath=$(realpath ../config.prop) \
-                      -PabiList=armeabi-v7a,arm64-v8a,x86,x86_64 \
+                      -PabiList=armeabi-v7a,arm64-v8a \
                       --parallel --build-cache
 
             - name: Stop Gradle
@@ -85,7 +85,7 @@ jobs:
                   gh release delete "$tag" -y --cleanup-tag || true
                   git push origin :refs/tags/$tag || true
                   git tag "$tag"
-                  git push origin "$tag"
+                  git push origin "refs/tags/$tag"
                   gh release create "$tag" out/SuperSU.apk out/SuperSU.apk.sha256 \
                       --title "SuperSU $tag" \
                       --notes "$body"
