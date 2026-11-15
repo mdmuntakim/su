@@ -1,0 +1,98 @@
+name: Build SuperSU
+
+on:
+    push:
+        branches: [app]
+    workflow_dispatch:
+
+jobs:
+    apk:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+
+        permissions:
+            contents: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y zip unzip
+
+            - name: Setup Java
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 21
+                  cache: gradle
+
+            - name: Cache Gradle
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: gradle-app-${{ hashFiles('app/gradle/libs.versions.toml','app/gradle/wrapper/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      gradle-app-
+
+            - name: Download prebuilt binaries from the binary branch release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release download binary --repo "$GITHUB_REPOSITORY" \
+                      --pattern binary.zip --output binary.zip --clobber
+                  sha256sum -c binary.zip.sha256 || true
+                  rm -rf native/out
+                  mkdir -p native/out
+                  unzip -q binary.zip -d native/out
+                  ls native/out/*
+
+            - name: Build SuperSU APK (Gradle only, no native compilation)
+              run: |
+                  cd app
+                  ./gradlew :apk:assembleRelease \
+                      -PconfigPath=$(realpath ../config.prop) \
+                      -PabiList=armeabi-v7a,arm64-v8a,x86,x86_64 \
+                      --parallel --build-cache
+
+            - name: Stop Gradle
+              run: app/gradlew --stop || true
+
+            - name: Rename APK to SuperSU
+              run: |
+                  mkdir -p out
+                  cp app/apk/build/outputs/apk/release/apk-release.apk out/SuperSU.apk
+                  cp app/apk/build/outputs/apk/release/apk-release.apk out/app-release.apk
+                  sha256sum out/SuperSU.apk | tee out/SuperSU.apk.sha256
+                  ls -la out/
+
+            - name: Publish release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  tag="supersu"
+                  commit=$(git rev-parse --short HEAD)
+                  build_time=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+                  body=$(printf "SuperSU manager APK\n\nBuilt on the app branch from binaries published on the binary branch.\nCommit: %s\nBuild time: %s\nActor: %s\nRepository: %s\n" \
+                      "$commit" "$build_time" "$GITHUB_ACTOR" "$GITHUB_REPOSITORY")
+                  gh release delete "$tag" -y --cleanup-tag || true
+                  git push origin :refs/tags/$tag || true
+                  git tag "$tag"
+                  git push origin "$tag"
+                  gh release create "$tag" out/SuperSU.apk out/SuperSU.apk.sha256 \
+                      --title "SuperSU $tag" \
+                      --notes "$body"
+
+            - name: Upload build report on failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: gradle-error-reports
+                  path: "**/build/reports/"

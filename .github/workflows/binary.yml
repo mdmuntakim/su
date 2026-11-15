@@ -85,7 +85,7 @@ jobs:
 
             - name: Publish release (binary.zip)
               env:
-                  GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+                  GH_TOKEN: ${{ github.token }}
               run: |
                   tag="binary"
                   commit=$(git rev-parse --short HEAD)
